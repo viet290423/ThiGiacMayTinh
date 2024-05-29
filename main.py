@@ -38,7 +38,7 @@ def process_image(image_path):
 
         rois = sorted(rois, key=lambda d: d[0])
 
-    processed_digits = []
+    new_imgs = []
     for (x, roi) in rois:
         height, width = roi.shape
         if height > width:
@@ -51,15 +51,16 @@ def process_image(image_path):
         roi = cv2.resize(roi, (28, 28), interpolation=cv2.INTER_AREA)
         roi = roi.astype('float32') / 255.0
         roi = roi.reshape(1, 28, 28, 1)
-        processed_digits.append(roi)
+        new_imgs.append(roi)
 
     predictions = []
-    for digit in processed_digits:
+    for digit in new_imgs:
         prediction = model.predict(digit)
         predicted_digit = np.argmax(prediction)
         predictions.append(str(predicted_digit))
 
     return predictions
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
